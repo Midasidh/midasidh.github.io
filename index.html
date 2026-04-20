@@ -2,97 +2,203 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Leonel Daniels | Terminal Portfolio</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LEONEL DANIELS | SECURE TERMINAL</title>
     <style>
+        :root {
+            --neon-green: #00ff41;
+            --dark-green: #003b00;
+            --bg-black: #050505;
+            --glow: 0 0 10px rgba(0, 255, 65, 0.4);
+        }
+
         body {
-            background-color: #0a0a0a;
-            color: #00ff41;
+            background-color: var(--bg-black);
+            color: var(--neon-green);
             font-family: 'Fira Code', 'Courier New', monospace;
+            margin: 0;
+            overflow: hidden; /* Evita scroll doble */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* Efecto de líneas de escaneo (Retro CRT) */
+        body::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
+                        linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 2;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+
+        /* Marco de la Terminal */
+        .terminal-window {
+            width: 90vw;
+            height: 85vh;
+            border: 2px solid var(--dark-green);
+            box-shadow: var(--glow), inset 0 0 20px rgba(0, 59, 0, 0.5);
+            background: rgba(10, 10, 10, 0.95);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Barra Superior */
+        .terminal-header {
+            background: var(--dark-green);
+            color: var(--bg-black);
+            padding: 5px 15px;
+            display: flex;
+            justify-content: space-between;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        /* Área de Contenido */
+        .terminal-body {
+            flex-grow: 1;
             padding: 20px;
-            line-height: 1.4;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: var(--dark-green) transparent;
         }
-        .terminal { max-width: 900px; margin: auto; }
-        .banner { color: #008f11; white-space: pre; font-size: 0.7rem; margin-bottom: 20px; }
-        .prompt { color: #ff0055; font-weight: bold; }
-        .input-line { display: flex; }
+
+        .terminal-body::-webkit-scrollbar { width: 6px; }
+        .terminal-body::-webkit-scrollbar-thumb { background: var(--dark-green); }
+
+        .banner { 
+            white-space: pre; 
+            font-size: clamp(6px, 1vw, 12px); 
+            line-height: 1.2;
+            margin-bottom: 30px;
+            text-shadow: var(--glow);
+        }
+
+        .output-line { margin-bottom: 10px; }
+        .jedi-msg { color: #00d0ff; text-shadow: 0 0 5px #00d0ff; }
+        
+        /* Línea de Entrada */
+        .input-area {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid var(--dark-green);
+            background: rgba(0, 20, 0, 0.3);
+        }
+
+        .prompt { color: #ff0055; margin-right: 10px; font-weight: bold; }
         input {
-            background: transparent; border: none; color: #00ff41;
-            outline: none; font-family: inherit; font-size: 1rem; width: 100%;
+            background: transparent;
+            border: none;
+            color: var(--neon-green);
+            outline: none;
+            font-family: inherit;
+            font-size: 1rem;
+            width: 100%;
+            text-shadow: var(--glow);
         }
-        .history { margin-bottom: 10px; }
-        .response { color: #00d0ff; margin-bottom: 15px; padding-left: 10px; border-left: 2px solid #333; }
+
+        /* Animación de cursor */
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 18px;
+            background: var(--neon-green);
+            animation: blink 1s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink { 50% { opacity: 0; } }
     </style>
 </head>
 <body>
-    <div class="terminal">
+
+<div class="terminal-window">
+    <div class="terminal-header">
+        <span>SESSION: LEONEL_DANIELS_SECURE_AUTH</span>
+        <span>STATUS: ENCRYPTED</span>
+    </div>
+    
+    <div class="terminal-body" id="display">
         <div class="banner">
- __    ______  ______  __   __  ______  __        
-/\ \  /\  ___\/\  __ \/\ "-.\ \/\  ___\/\ \       
-\ \ \ \ \  __\\ \ \/\ \ \ \-.  \ \  __\\ \ \____  
- \ \_\ \ \_____\ \_____\ \_\\"\_\ \_____\ \_____\ 
-  \/_/  \/_____/\/_____/\/_/ \/_/\/_____/\/_____/ 
-                                                  
-DANIELS OS v1.0.4-LTS (Caracas_Node_01)
-Last login: Sun Apr 19 22:50:07 2026 from 127.0.0.1
-"The impediment to action advances action." - Marcus Aurelius
-------------------------------------------------------------</div>
-
-        <div id="history" class="history">
-            <div>Escribe 'help' para explorar el sistema o 'force' para una reflexión.</div>
+██████╗  █████╗ ███╗   ██╗██╗███████╗██╗     ███████╗
+██╔══██╗██╔══██╗████╗  ██║██║██╔════╝██║     ██╔════╝
+██║  ██║███████║██╔██╗ ██║██║█████╗  ██║     ███████╗
+██║  ██║██╔══██║██║╚██╗██║██║██╔══╝  ██║     ╚════██║
+██████╔╝██║  ██║██║ ╚████║██║███████╗███████╗███████║
+╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚══════╝╚══════╝╚══════╝
         </div>
-
-        <div class="input-line">
-            <span class="prompt">leonel@jedi-archive:~$</span>
-            <input type="text" id="commandInput" autofocus autocomplete="off">
-        </div>
+        <div class="output-line">SYS_INFO: Caracas_Node_01 | Active: True</div>
+        <div class="output-line">SECURITY_LEVEL: Blue Team Authorized</div>
+        <div class="output-line">Type 'help' to initialize discovery.</div>
+        <hr style="border: 0.5px solid var(--dark-green); margin: 20px 0;">
+        <div id="history"></div>
     </div>
 
-    <script>
-        const input = document.getElementById('commandInput');
-        const history = document.getElementById('history');
+    <div class="input-area">
+        <span class="prompt">midasidh@jedi-terminal:~$</span>
+        <input type="text" id="cmdInput" autofocus spellcheck="false" autocomplete="off">
+    </div>
+</div>
 
-        const commands = {
-            'help': 'Comandos: about, skills, force, system-info, clear',
-            'about': 'Leonel Daniels. TSU en Informática / Estudiante de Ingeniería. Forjando orden en el caos digital mediante la ciberseguridad y la razón.',
-            'skills': 'Blue Team, SOC Analysis, Python, JavaScript, Cisco (CCNA/CyberOps).',
-            'force': () => {
-                const quotes = [
-                    "Marcus Aurelius: 'Tienes poder sobre tu mente, no sobre los eventos externos. Date cuenta de esto y encontrarás la Fuerza'.",
-                    "Yoda: 'El miedo es el camino hacia el lado oscuro. El miedo lleva a la ira, la ira al odio, el odio al sufrimiento (Un estoico no lo permitiría)'.",
-                    "Seneca: 'No es porque las cosas sean difíciles que no nos atrevemos; es porque no nos atrevemos que son difíciles. Hazlo o no lo hagas, pero no lo intentes'.",
-                    "Epicteto: 'Ninguna persona es libre si no es dueña de sí misma. El control de tus emociones es tu mejor sable de luz'."
-                ];
-                return quotes[Math.floor(Math.random() * quotes.length)];
-            },
-            'system-info': 'CPU: Core i7-4790 | GPU: AMD RX 580 | OS: Stoic-Linux Kernel 5.15 | Status: CALM',
-            'clear': 'clear'
-        };
+<script>
+    const history = document.getElementById('history');
+    const input = document.getElementById('cmdInput');
+    const display = document.getElementById('display');
 
-        input.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                const cmd = input.value.toLowerCase().trim();
-                if (!cmd) return;
+    const commands = {
+        'help': 'Available commands: about, skills, force, system, clear, whoami',
+        'whoami': 'Leonel Daniels: TSU in Informatics, Information Engineering student, SOC Analyst aspirant.',
+        'about': 'Stoic philosopher in training. "You have power over your mind, not outside events." - Marcus Aurelius.',
+        'skills': 'Cybersecurity: SOC Analysis, Blue Team Operations.\nNetworks: Cisco CCNA (In Progress).\nLanguages: Python (Expert), JavaScript, Java.',
+        'system': 'HARDWARE_REPORT:\nCPU: Core i7-4790 (8 Cores)\nGPU: AMD RX 580 (8GB)\nMEM: Optimized\nLOCATION: Caracas, VZ.',
+        'force': () => {
+            const quotes = [
+                "Jedi Code: 'There is no emotion, there is peace. (Stoicism)'.",
+                "Yoda: 'The fear of loss is a path to the Dark Side. Train yourself to let go'.",
+                "Epictetus: 'Control your perception, for it is your only true lightsaber'.",
+                "Marcus Aurelius: 'The Universe is change; our life is what our thoughts make it'."
+            ];
+            return quotes[Math.floor(Math.random() * quotes.length)];
+        }
+    };
 
-                // Crear línea de comando
-                const line = document.createElement('div');
-                line.innerHTML = `<span class="prompt">leonel@jedi-archive:~$</span> ${cmd}`;
-                history.appendChild(line);
+    input.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            const rawVal = input.value.trim();
+            const cmd = rawVal.toLowerCase();
+            
+            const line = document.createElement('div');
+            line.innerHTML = `<span style="color:#ff0055">>>></span> ${rawVal}`;
+            history.appendChild(line);
 
-                // Procesar respuesta
-                if (cmd === 'clear') {
-                    history.innerHTML = '';
-                } else {
-                    const response = document.createElement('div');
-                    response.className = 'response';
+            if (cmd === 'clear') {
+                history.innerHTML = '';
+            } else if (cmd !== '') {
+                const response = document.createElement('div');
+                response.style.margin = "5px 0 15px 15px";
+                if (commands[cmd]) {
                     const result = commands[cmd];
-                    response.innerText = typeof result === 'function' ? result() : (result || 'Error: Comando no reconocido por el Consejo.');
-                    history.appendChild(response);
+                    response.innerHTML = `<span class="jedi-msg">${typeof result === 'function' ? result() : result}</span>`;
+                } else {
+                    response.innerText = `[!] Error: Access denied or unknown command: ${cmd}`;
                 }
-
-                input.value = '';
-                window.scrollTo(0, document.body.scrollHeight);
+                history.appendChild(response);
             }
-        });
-    </script>
+
+            input.value = '';
+            display.scrollTo(0, display.scrollHeight);
+        }
+    });
+
+    document.addEventListener('click', () => input.focus());
+</script>
+
 </body>
 </html>
