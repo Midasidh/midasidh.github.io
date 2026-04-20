@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Leonel Daniels | Terminal Portfolio</title>
+    <style>
+        body {
+            background-color: #0d0d0d;
+            color: #00ff41; /* Verde Matrix/Terminal */
+            font-family: 'Fira Code', 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            height: 90vh;
+        }
+        .output { overflow-y: auto; flex-grow: 1; }
+        .input-line { display: flex; align-items: center; }
+        .prompt { color: #ff0055; margin-right: 10px; }
+        input {
+            background: transparent;
+            border: none;
+            color: #00ff41;
+            outline: none;
+            font-family: inherit;
+            font-size: 1rem;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="output" id="log">
+        <div>Leonel Daniels Terminal [Version 1.0.0]</div>
+        <div>Escribe 'help' para ver los comandos disponibles.</div><br>
+    </div>
+    <div class="input-line">
+        <span class="prompt">leonel@kali:~$</span>
+        <input type="text" id="commandInput" autofocus>
+    </div>
+
+    <script>
+        const input = document.getElementById('commandInput');
+        const log = document.getElementById('log');
+
+        const commands = {
+            'help': 'Comandos: about, projects, skills, contact, clear',
+            'about': 'Leonel Daniels - TSU en Informática / Estudiante de Ingeniería. Enfocado en Ciberseguridad (Blue Team) y Redes.',
+            'projects': '1. Automatización Excel (Python)\n2. Optimización Nodos CANTV\n3. CRUD Bibliotecario (Laravel)',
+            'skills': 'Python, JavaScript, Cisco CCNA, CyberOps, SOC Analysis.',
+            'clear': () => log.innerHTML = ''
+        };
+
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const cmd = input.value.toLowerCase();
+                const newLine = document.createElement('div');
+                newLine.innerHTML = `<span class="prompt">leonel@kali:~$</span> ${cmd}`;
+                log.appendChild(newLine);
+
+                const response = document.createElement('div');
+                if (typeof commands[cmd] === 'function') {
+                    commands[cmd]();
+                } else {
+                    response.innerText = commands[cmd] || `Comando no encontrado: ${cmd}`;
+                }
+                log.appendChild(response);
+                input.value = '';
+                window.scrollTo(0, document.body.scrollHeight);
+            }
+        });
+    </script>
+</body>
+</html>
