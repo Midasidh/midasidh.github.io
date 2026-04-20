@@ -3,154 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LEONEL DANIELS | JEDI ARCHIVES</title>
+    <title>Leonel Daniels | Information Engineer</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
     <style>
         :root {
-            --neon-blue: #00d0ff;
-            --neon-green: #00ff41;
-            --glow-green: rgba(0, 255, 65, 0.2);
-            --bg-black: #020205;
+            --primary: #00ff41;
+            --accent: #00d0ff;
+            --bg: #020205;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --border: rgba(0, 255, 65, 0.2);
         }
 
-        * { box-sizing: border-box; cursor: crosshair; }
-
-        body, html {
-            height: 100%; margin: 0; padding: 0;
-            background-color: var(--bg-black);
-            color: var(--neon-green);
-            font-family: 'Fira Code', 'Courier New', monospace;
-            overflow: hidden; /* Evita scroll de la página completa */
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            background-color: var(--bg);
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
         }
 
-        /* FONDO ESPACIAL DINÁMICO */
+        /* FONDO ESPACIAL */
         #starfield {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: 0; background: radial-gradient(circle at center, #0a0a20 0%, #020205 100%);
+            z-index: -1; background: radial-gradient(circle at center, #0a0a20 0%, #020205 100%);
         }
 
-        /* INTERFAZ DE TERMINAL */
-        .ui-wrapper {
-            position: relative; z-index: 10;
-            display: flex; justify-content: center; align-items: center;
-            height: 100vh; padding: 20px;
-        }
-
-        .terminal-window {
-            width: 100%; max-width: 1100px; height: 85vh;
-            background: rgba(5, 5, 10, 0.85);
-            border: 1px solid var(--neon-green);
-            box-shadow: 0 0 20px var(--glow-green), inset 0 0 30px rgba(0, 255, 65, 0.05);
-            backdrop-filter: blur(10px);
-            display: flex; flex-direction: column;
-            border-radius: 5px; overflow: hidden;
-            animation: bootUp 1.5s ease-out;
-        }
-
-        /* HEADER */
-        .header {
-            background: var(--neon-green); color: black;
-            padding: 8px 15px; font-weight: bold; font-size: 0.75rem;
+        /* NAVEGACIÓN */
+        nav {
+            position: fixed; top: 0; width: 100%; padding: 20px 50px;
             display: flex; justify-content: space-between; align-items: center;
+            background: rgba(2, 2, 5, 0.8); backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border); z-index: 100;
         }
 
-        .status-dot {
-            width: 8px; height: 8px; background: black; border-radius: 50%;
-            display: inline-block; animation: pulse 1.5s infinite;
+        .logo { font-family: 'Fira Code', monospace; color: var(--primary); font-weight: bold; font-size: 1.2rem; }
+        .nav-links a { 
+            color: #fff; text-decoration: none; margin-left: 30px; 
+            font-size: 0.9rem; transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;
+        }
+        .nav-links a:hover { color: var(--primary); text-shadow: 0 0 10px var(--primary); }
+
+        /* HERO SECTION */
+        .hero {
+            height: 100vh; display: flex; flex-direction: column;
+            justify-content: center; align-items: center; text-align: center;
+            padding: 0 20px;
         }
 
-        /* ÁREA DE SALIDA */
-        .output-container {
-            flex-grow: 1; padding: 25px; overflow-y: auto;
-            scrollbar-width: thin; scrollbar-color: var(--neon-green) transparent;
+        .hero h1 { 
+            font-size: clamp(2.5rem, 6vw, 5rem); margin-bottom: 10px; 
+            background: linear-gradient(to right, #fff, var(--primary));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
 
-        .output-container::-webkit-scrollbar { width: 4px; }
-        .output-container::-webkit-scrollbar-thumb { background: var(--neon-green); }
+        .hero p { font-family: 'Fira Code', monospace; color: var(--accent); font-size: 1.2rem; }
 
-        .banner { 
-            white-space: pre; color: var(--neon-green); font-size: clamp(6px, 1.2vw, 12px);
-            text-shadow: 0 0 8px var(--neon-green); margin-bottom: 30px;
+        /* SECCIONES GENERALES */
+        section { padding: 100px 10% 50px; max-width: 1400px; margin: auto; }
+        h2 { 
+            font-size: 2rem; margin-bottom: 40px; color: var(--primary); 
+            display: flex; align-items: center; gap: 15px; 
+        }
+        h2::after { content: ""; height: 1px; flex-grow: 1; background: var(--border); }
+
+        /* GRID DE PROYECTOS/SKILLS */
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+
+        .card {
+            background: var(--card-bg); border: 1px solid var(--border);
+            padding: 30px; border-radius: 10px; transition: 0.4s;
+            position: relative; overflow: hidden;
+        }
+        .card:hover { 
+            transform: translateY(-10px); background: rgba(0, 255, 65, 0.03); 
+            border-color: var(--primary); box-shadow: 0 10px 30px rgba(0, 255, 65, 0.1);
         }
 
-        /* LÍNEA DE COMANDOS */
-        .input-line {
-            background: rgba(0, 255, 65, 0.05);
-            padding: 15px 25px; border-top: 1px solid rgba(0, 255, 65, 0.2);
-            display: flex; align-items: center;
+        .card h3 { color: #fff; margin-bottom: 15px; }
+        .tag { 
+            display: inline-block; padding: 3px 10px; border: 1px solid var(--accent); 
+            color: var(--accent); font-size: 0.7rem; border-radius: 4px; margin-right: 5px; margin-bottom: 10px;
         }
 
-        .prompt { color: var(--neon-blue); font-weight: bold; margin-right: 12px; }
-
-        input {
-            background: transparent; border: none; color: white;
-            outline: none; font-family: inherit; font-size: 1.1rem;
-            width: 100%; text-shadow: 0 0 5px var(--neon-blue);
+        /* FOOTER */
+        footer { 
+            text-align: center; padding: 50px; border-top: 1px solid var(--border); 
+            font-size: 0.8rem; color: #666; 
         }
 
-        /* ESTILOS DE RESPUESTA */
-        .res-title { color: var(--neon-blue); font-weight: bold; display: block; margin-top: 15px; }
-        .res-text { color: #ccc; margin-left: 15px; display: block; border-left: 2px solid #222; padding-left: 10px; }
-        .skill-bar { height: 4px; background: #222; margin: 5px 0 15px 15px; width: 200px; }
-        .skill-fill { height: 100%; background: var(--neon-green); box-shadow: 0 0 8px var(--neon-green); }
-
-        /* ANIMACIONES */
-        @keyframes bootUp {
-            from { opacity: 0; transform: scale(0.95) translateY(20px); }
-            to { opacity: 1; transform: scale(1) translateY(0); }
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; }
-        }
-
-        @keyframes scanline {
-            from { top: 0; } to { top: 100%; }
-        }
-
-        .scanline {
-            width: 100%; height: 2px; background: rgba(0, 255, 65, 0.1);
-            position: absolute; z-index: 20; pointer-events: none;
-            animation: scanline 8s linear infinite;
+        @media (max-width: 768px) {
+            nav { padding: 20px; }
+            .nav-links { display: none; } /* En una web pro real, aquí iría un menú hamburguesa */
         }
     </style>
 </head>
 <body>
 
 <canvas id="starfield"></canvas>
-<div class="scanline"></div>
 
-<div class="ui-wrapper">
-    <div class="terminal-window">
-        <div class="header">
-            <span>TERMINAL ID: DANIELS_BLUE_01</span>
-            <div><span class="status-dot"></span> SECURE CONNECTION</div>
-        </div>
+<nav>
+    <div class="logo">> LEONEL_DANIELS_</div>
+    <div class="nav-links">
+        <a href="#about">Sobre mí</a>
+        <a href="#projects">Proyectos</a>
+        <a href="#skills">Habilidades</a>
+        <a href="#contact">Contacto</a>
+    </div>
+</nav>
 
-        <div class="output-container" id="output">
-            <div class="banner">
- ██████╗  █████╗ ███╗   ██╗██╗███████╗██╗     ███████╗
- ██╔══██╗██╔══██╗████╗  ██║██║██╔════╝██║     ██╔════╝
- ██║  ██║███████║██╔██╗ ██║██║█████╗  ██║     ███████╗
- ██║  ██║██╔══██║██║╚██╗██║██║██╔══╝  ██║     ╚════██║
- ██████╔╝██║  ██║██║ ╚████║██║███████╗███████╗███████║
- ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝╚══════╝╚══════╝╚══════╝</div>
-            
-            <div>[+] SYSTEM INITIALIZED...</div>
-            <div>[+] LOCATION: CARACAS_NODE_01</div>
-            <div>[+] ARCHIVE STATUS: STOIC_ENCRYPTION_ACTIVE</div>
-            <div style="color:var(--neon-blue); margin-top:10px;">Escribe 'help' para listar los protocolos de acceso.</div>
-            <hr style="border: 0.5px solid #222; margin: 20px 0;">
-        </div>
+<section class="hero">
+    <h1>Leonel Daniels</h1>
+    <p>TSU Informática & Information Engineer Student</p>
+    <div style="margin-top: 30px; font-style: italic; color: #888;">
+        "The impediment to action advances action." — Stoic Logic
+    </div>
+</section>
 
-        <div class="input-line">
-            <span class="prompt">midasidh@jedi-archives:~$</span>
-            <input type="text" id="cmd" autofocus spellcheck="false" autocomplete="off">
+<section id="about">
+    <h2>Sobre mí</h2>
+    <div class="grid">
+        <div style="grid-column: span 2">
+            <p>Especialista en informática residente en Caracas, enfocado en la intersección de la <strong>Ciberseguridad (Blue Team)</strong> y la infraestructura de red. Mi enfoque combina la disciplina estoica con la resolución técnica de problemas complejos.</p>
+            <br>
+            <p>Actualmente cursando Ingeniería e impulsando la automatización con Python y el análisis de seguridad en centros de operaciones (SOC).</p>
         </div>
     </div>
-</div>
+</section>
+
+<section id="projects">
+    <h2>Proyectos Destacados</h2>
+    <div class="grid">
+        <div class="card">
+            <span class="tag">Infraestructura</span><span class="tag">Networking</span>
+            <h3>Optimización Nodos CANTV</h3>
+            <p>Gestión y categorización de nodos de red aplicando metodología Scrum para mejorar la eficiencia operativa.</p>
+        </div>
+        <div class="card">
+            <span class="tag">Python</span><span class="tag">Automation</span>
+            <h3>Sincronizador Excel Pro</h3>
+            <p>Herramienta automatizada para la manipulación y sincronización de grandes volúmenes de datos entre hojas de cálculo empresariales.</p>
+        </div>
+        <div class="card">
+            <span class="tag">Blue Team</span><span class="tag">SOC</span>
+            <h3>Laboratorio de Ciberseguridad</h3>
+            <p>Simulación de ataques y defensa en entornos controlados usando arquitecturas de Cisco y protocolos de detección de intrusos.</p>
+        </div>
+    </div>
+</section>
+
+<section id="skills">
+    <h2>Habilidades Técnicas</h2>
+    <div class="grid">
+        <div class="card">
+            <h3>Ciberseguridad</h3>
+            <ul>
+                <li>SOC Analysis</li>
+                <li>Intrusion Detection (IDS/IPS)</li>
+                <li>Defensive Strategy (Blue Team)</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3>Desarrollo</h3>
+            <ul>
+                <li>Python (Backend & Scripts)</li>
+                <li>JavaScript (Frontend Interactivo)</li>
+                <li>Java (Core Logic)</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3>Networking</h3>
+            <ul>
+                <li>Cisco CCNA Training</li>
+                <li>CyberOps Associate</li>
+                <li>Packet Tracer Architect</li>
+            </ul>
+        </div>
+    </div>
+</section>
+
+<section id="contact" style="text-align: center;">
+    <h2>¿Hablamos?</h2>
+    <p>Disponible para proyectos de ingeniería y consultoría en ciberseguridad.</p>
+    <br>
+    <a href="mailto:tu-email@dominio.com" style="color: var(--primary); text-decoration: none; font-family: 'Fira Code'; border: 1px solid var(--primary); padding: 15px 30px; border-radius: 5px;">ESTABLECER CONEXIÓN</a>
+</section>
+
+<footer>
+    &copy; 2026 Leonel Daniels | Desplegado vía GitHub Pages en leoneldaniels.tech
+</footer>
 
 <script>
-    // --- MOTOR DE ESTRELLAS ---
+    // MOTOR DE ESTRELLAS (Minimalista y eficiente)
     const canvas = document.getElementById('starfield');
     const ctx = canvas.getContext('2d');
     let stars = [];
@@ -159,19 +204,19 @@
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
         stars = [];
-        for(let i=0; i<200; i++) {
+        for(let i=0; i<150; i++) {
             stars.push({
                 x: Math.random() * canvas.width,
                 y: Math.random() * canvas.height,
-                size: Math.random() * 1.5,
-                speed: Math.random() * 0.5
+                size: Math.random() * 2,
+                speed: Math.random() * 0.3
             });
         }
     }
 
     function drawStars() {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
-        ctx.fillStyle = "white";
+        ctx.fillStyle = "#fff";
         stars.forEach(s => {
             ctx.beginPath();
             ctx.arc(s.x, s.y, s.size, 0, Math.PI*2);
@@ -182,10 +227,10 @@
         requestAnimationFrame(drawStars);
     }
 
-    // --- LÓGICA DE COMANDOS ---
-    const output = document.getElementById('output');
-    const input = document.getElementById('cmd');
+    window.addEventListener('resize', initStars);
+    initStars();
+    drawStars();
+</script>
 
-    const cmdSet = {
-        'help': 'COMANDOS: about, skills, force, projects, system, contact, clear',
-        'whoami': 'Leonel Daniels | TSU Inform
+</body>
+</html>
