@@ -5,64 +5,90 @@
     <title>Leonel Daniels | Terminal Portfolio</title>
     <style>
         body {
-            background-color: #0d0d0d;
-            color: #00ff41; /* Verde Matrix/Terminal */
-            font-family: 'Fira Code', 'Courier New', monospace;
-            display: flex;
-            flex-direction: column;
-            padding: 20px;
-            height: 90vh;
-        }
-        .output { overflow-y: auto; flex-grow: 1; }
-        .input-line { display: flex; align-items: center; }
-        .prompt { color: #ff0055; margin-right: 10px; }
-        input {
-            background: transparent;
-            border: none;
+            background-color: #0a0a0a;
             color: #00ff41;
-            outline: none;
-            font-family: inherit;
-            font-size: 1rem;
-            width: 100%;
+            font-family: 'Fira Code', 'Courier New', monospace;
+            padding: 20px;
+            line-height: 1.4;
         }
+        .terminal { max-width: 900px; margin: auto; }
+        .banner { color: #008f11; white-space: pre; font-size: 0.7rem; margin-bottom: 20px; }
+        .prompt { color: #ff0055; font-weight: bold; }
+        .input-line { display: flex; }
+        input {
+            background: transparent; border: none; color: #00ff41;
+            outline: none; font-family: inherit; font-size: 1rem; width: 100%;
+        }
+        .history { margin-bottom: 10px; }
+        .response { color: #00d0ff; margin-bottom: 15px; padding-left: 10px; border-left: 2px solid #333; }
     </style>
 </head>
 <body>
-    <div class="output" id="log">
-        <div>Leonel Daniels Terminal [Version 1.0.0]</div>
-        <div>Escribe 'help' para ver los comandos disponibles.</div><br>
-    </div>
-    <div class="input-line">
-        <span class="prompt">leonel@kali:~$</span>
-        <input type="text" id="commandInput" autofocus>
+    <div class="terminal">
+        <div class="banner">
+ __    ______  ______  __   __  ______  __        
+/\ \  /\  ___\/\  __ \/\ "-.\ \/\  ___\/\ \       
+\ \ \ \ \  __\\ \ \/\ \ \ \-.  \ \  __\\ \ \____  
+ \ \_\ \ \_____\ \_____\ \_\\"\_\ \_____\ \_____\ 
+  \/_/  \/_____/\/_____/\/_/ \/_/\/_____/\/_____/ 
+                                                  
+DANIELS OS v1.0.4-LTS (Caracas_Node_01)
+Last login: Sun Apr 19 22:50:07 2026 from 127.0.0.1
+"The impediment to action advances action." - Marcus Aurelius
+------------------------------------------------------------</div>
+
+        <div id="history" class="history">
+            <div>Escribe 'help' para explorar el sistema o 'force' para una reflexión.</div>
+        </div>
+
+        <div class="input-line">
+            <span class="prompt">leonel@jedi-archive:~$</span>
+            <input type="text" id="commandInput" autofocus autocomplete="off">
+        </div>
     </div>
 
     <script>
         const input = document.getElementById('commandInput');
-        const log = document.getElementById('log');
+        const history = document.getElementById('history');
 
         const commands = {
-            'help': 'Comandos: about, projects, skills, contact, clear',
-            'about': 'Leonel Daniels - TSU en Informática / Estudiante de Ingeniería. Enfocado en Ciberseguridad (Blue Team) y Redes.',
-            'projects': '1. Automatización Excel (Python)\n2. Optimización Nodos CANTV\n3. CRUD Bibliotecario (Laravel)',
-            'skills': 'Python, JavaScript, Cisco CCNA, CyberOps, SOC Analysis.',
-            'clear': () => log.innerHTML = ''
+            'help': 'Comandos: about, skills, force, system-info, clear',
+            'about': 'Leonel Daniels. TSU en Informática / Estudiante de Ingeniería. Forjando orden en el caos digital mediante la ciberseguridad y la razón.',
+            'skills': 'Blue Team, SOC Analysis, Python, JavaScript, Cisco (CCNA/CyberOps).',
+            'force': () => {
+                const quotes = [
+                    "Marcus Aurelius: 'Tienes poder sobre tu mente, no sobre los eventos externos. Date cuenta de esto y encontrarás la Fuerza'.",
+                    "Yoda: 'El miedo es el camino hacia el lado oscuro. El miedo lleva a la ira, la ira al odio, el odio al sufrimiento (Un estoico no lo permitiría)'.",
+                    "Seneca: 'No es porque las cosas sean difíciles que no nos atrevemos; es porque no nos atrevemos que son difíciles. Hazlo o no lo hagas, pero no lo intentes'.",
+                    "Epicteto: 'Ninguna persona es libre si no es dueña de sí misma. El control de tus emociones es tu mejor sable de luz'."
+                ];
+                return quotes[Math.floor(Math.random() * quotes.length)];
+            },
+            'system-info': 'CPU: Core i7-4790 | GPU: AMD RX 580 | OS: Stoic-Linux Kernel 5.15 | Status: CALM',
+            'clear': 'clear'
         };
 
         input.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
-                const cmd = input.value.toLowerCase();
-                const newLine = document.createElement('div');
-                newLine.innerHTML = `<span class="prompt">leonel@kali:~$</span> ${cmd}`;
-                log.appendChild(newLine);
+                const cmd = input.value.toLowerCase().trim();
+                if (!cmd) return;
 
-                const response = document.createElement('div');
-                if (typeof commands[cmd] === 'function') {
-                    commands[cmd]();
+                // Crear línea de comando
+                const line = document.createElement('div');
+                line.innerHTML = `<span class="prompt">leonel@jedi-archive:~$</span> ${cmd}`;
+                history.appendChild(line);
+
+                // Procesar respuesta
+                if (cmd === 'clear') {
+                    history.innerHTML = '';
                 } else {
-                    response.innerText = commands[cmd] || `Comando no encontrado: ${cmd}`;
+                    const response = document.createElement('div');
+                    response.className = 'response';
+                    const result = commands[cmd];
+                    response.innerText = typeof result === 'function' ? result() : (result || 'Error: Comando no reconocido por el Consejo.');
+                    history.appendChild(response);
                 }
-                log.appendChild(response);
+
                 input.value = '';
                 window.scrollTo(0, document.body.scrollHeight);
             }
